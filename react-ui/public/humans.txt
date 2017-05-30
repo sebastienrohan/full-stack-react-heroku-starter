@@ -1,0 +1,15 @@
+# humanstxt.org/
+# The humans responsible & technology colophon
+
+# TEAM
+
+  <Sébastien Rohan> -- <Web Developer> -- <@sebrohan>
+
+# THANKS
+
+  <name>
+
+# TECHNOLOGY COLOPHON
+
+  CSS3, HTML5, JavaScript, React, Node, MongoDB
+  https://github.com/mars/heroku-cra-node

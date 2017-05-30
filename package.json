@@ -27,5 +27,7 @@
     "react"
   ],
   "license": "MIT",
-  "devDependencies": {}
+  "devDependencies": {
+    "standard": "^10.0.2"
+  }
 }
