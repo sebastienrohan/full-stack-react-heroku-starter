@@ -1,45 +1,20 @@
-import React, { Component } from 'react'
-import Menu from './Menu'
-import getUserData from '../utils/api'
+import React from 'react'
+import PropTypes from 'prop-types'
+import { Card, CardTitle, CardText } from 'material-ui/Card'
 
-class Dashboard extends Component {
-  constructor () {
-    super()
-    this.state = { users: [] }
-  }
+const Dashboard = ({ secretData }) => (
+  <Card className='container'>
+    <CardTitle
+      title='Dashboard'
+      subtitle='You should get access to this page only after authentication.'
+    />
 
-  getUserData () {
-    getUserData().then((users) => {
-      this.setState({ users })
-    })
-  }
+    {secretData && <CardText style={{ fontSize: '16px', color: 'green' }}>{secretData}</CardText>}
+  </Card>
+)
 
-  componentDidMount () {
-    this.getUserData()
-  }
-
-  render () {
-    const { users } = this.state
-
-    return (
-      <div style={{textAlign: 'center'}}>
-        <Menu />
-        <h2 style={{marginBottom: '64px'}}>
-          This is the Dashboard
-        </h2>
-        <h3 style={{marginBottom: '48px'}}>
-          User list:
-        </h3>
-        { users.map((user, index) => (
-          <div key={index}>
-            <h4>{user.name}</h4>
-            <p>{user.have}</p>
-            <p>{user.want}</p>
-          </div>
-        )) }
-      </div>
-    )
-  }
+Dashboard.propTypes = {
+  secretData: PropTypes.string.isRequired
 }
 
 export default Dashboard

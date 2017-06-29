@@ -1,48 +1,46 @@
 const express = require('express')
 const path = require('path')
-const jwt = require('express-jwt')
-const jwks = require('jwks-rsa')
 const cors = require('cors')
 const bodyParser = require('body-parser')
+const passport = require('passport')
+
+// load sensitive information
 require('dotenv').config()
+
+// connect to the database and load models
+require('./models').connect('mongodb://localhost/react_app')
 
 const app = express()
 const PORT = process.env.PORT || 5000
 
+// priority serve any static files
+app.use(express.static(path.resolve(__dirname, '../react-ui/build')))
+
+// tell the app to parse HTTP body messages
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
 
-// Priority serve any static files.
-app.use(express.static(path.resolve(__dirname, '../react-ui/build')))
+// pass the passport middleware
+app.use(passport.initialize())
 
-const authCheck = jwt({
-  secret: jwks.expressJwtSecret({
-    cache: true,
-    rateLimit: true,
-    jwksRequestsPerMinute: 5,
-    // YOUR-AUTH0-DOMAIN name e.g prosper.auth0.com
-    jwksUri: process.env.jwksUri
-  }),
-  // This is the identifier we set when we created the API
-  audience: 'http://mtgpoly.trade',
-  issuer: process.env.issuer,
-  algorithms: ['RS256']
-})
+// load passport strategies
+const localSignupStrategy = require('./passport/local-signup')
+const localLoginStrategy = require('./passport/local-login')
+passport.use('local-signup', localSignupStrategy)
+passport.use('local-login', localLoginStrategy)
 
-// Answer API requests.
-app.get('/api/users', function (req, res) {
-  let users = [
-    {
-      'name': 'Seb',
-      'have': 'Black Lotus',
-      'want': 'Mox Jet'
-    }
-  ]
-  res.json(users)
-})
+// pass the authentication checker middleware
+const authCheckMiddleware = require('./middleware/auth-check')
+app.use('/api', authCheckMiddleware)
 
-// All remaining requests return the React app, so it can handle routing.
+// routes
+const authRoutes = require('./routes/auth')
+const apiRoutes = require('./routes/api')
+app.use('/auth', authRoutes)
+app.use('/api', apiRoutes)
+
+// all remaining requests return the React app, so it can handle routing.
 app.get('*', function (request, response) {
   response.sendFile(path.resolve(__dirname, '../react-ui/build', 'index.html'))
 })
