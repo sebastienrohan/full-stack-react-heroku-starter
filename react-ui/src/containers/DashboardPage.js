@@ -7,8 +7,23 @@ import Auth from '../modules/Auth'
 class DashboardPage extends Component {
   constructor (context) {
     super(context)
-    this.state = { secretData: [] }
+    this.state = {
+      userList: []
+    }
     this.redirectToLogin = this.redirectToLogin.bind(this)
+    this.showUserInfo = this.showUserInfo.bind(this)
+  }
+
+  showUserInfo (userId) {
+    let updatedUserList = this.state.userList
+    for (let i = 0; i < updatedUserList.length; i++) {
+      if (updatedUserList[i]._id === userId) {
+        updatedUserList[i].shown = !updatedUserList[i].shown
+      }
+    }
+    this.setState({
+      userList: updatedUserList
+    })
   }
 
   redirectToLogin () {
@@ -32,7 +47,7 @@ class DashboardPage extends Component {
     xhr.addEventListener('load', () => {
       if (xhr.status === 200) {
         this.setState({
-          secretData: xhr.response.message
+          userList: xhr.response.users
         })
       }
     })
@@ -43,7 +58,11 @@ class DashboardPage extends Component {
     return (
       <div>
         <Menu />
-        <Dashboard secretData={this.state.secretData} />
+        <Dashboard
+          userList={this.state.userList}
+          showUserInfo={this.showUserInfo}
+          clicked={this.state.clicked}
+        />
       </div>
     )
   }
