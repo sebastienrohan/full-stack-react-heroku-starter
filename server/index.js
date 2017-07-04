@@ -5,7 +5,9 @@ const bodyParser = require('body-parser')
 const passport = require('passport')
 
 // load sensitive information
-require('dotenv').config()
+if (process.env.NODE_ENV === 'development') {
+  require('dotenv').config()
+}
 
 // connect to the database and load models
 require('./models').connect('mongodb://localhost/react_app')
