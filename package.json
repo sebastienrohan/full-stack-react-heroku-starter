@@ -6,8 +6,8 @@
     "node": "6.9.x"
   },
   "scripts": {
-    "start": "node server",
-    "start-dev": "NODE_ENV=development node server",
+    "start-prod": "node server",
+    "start": "NODE_ENV=development node server",
     "heroku-postbuild": "cd react-ui/ && npm install --only=dev && npm install && npm run build"
   },
   "cacheDirectories": [
