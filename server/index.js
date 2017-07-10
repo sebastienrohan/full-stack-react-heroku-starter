@@ -3,6 +3,8 @@ const path = require('path')
 const cors = require('cors')
 const bodyParser = require('body-parser')
 const passport = require('passport')
+const helmet = require('helmet')
+const expressEnforcesSSL = require('express-enforces-ssl')
 
 // load sensitive information
 if (process.env.NODE_ENV === 'development') {
@@ -22,6 +24,11 @@ app.use(express.static(path.resolve(__dirname, '../react-ui/build')))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: true }))
 app.use(cors())
+
+//  middleware for securing your app via HTTP headers & HTTPS
+app.use(helmet())
+app.enable('trust proxy')
+app.use(expressEnforcesSSL())
 
 // pass the passport middleware
 app.use(passport.initialize())
